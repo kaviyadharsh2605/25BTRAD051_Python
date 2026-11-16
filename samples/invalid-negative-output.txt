@@ -1,7 +1,0 @@
-HOSPITAL RESOURCE MANAGEMENT - BANKER'S SAFETY ALGORITHM
-Kaviya Dharshini | USN: 25BTRAD051
-Educational simulation of a fixed resource-allocation snapshot.
-Enter number of processes: Enter number of resource types:
-Enter Allocation Matrix (one row per process):
-
-Invalid input: Allocation[0][0] cannot be negative.
