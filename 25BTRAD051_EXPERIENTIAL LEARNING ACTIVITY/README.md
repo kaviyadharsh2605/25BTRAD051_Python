@@ -1,193 +1,151 @@
-# SignBridge AI — Real-Time ISL to Text Translator
+# Deadlock in a Hospital Resource Management System
 
-> **AI-powered Indian Sign Language (ISL) recognition website** — webcam → MediaPipe landmarks → LSTM → real-time text + TTS.
+This Java console application implements the educational simulation described in the [Operating Systems report](docs/Hospital_Deadlock_Report_25BTRAD051.docx). It reads resource-allocation data, calculates the remaining Need matrix, and applies Banker's safety algorithm to find a completion sequence or report an unsafe state.
 
----
+| Submission detail | Value |
+| --- | --- |
+| Student | Kaviya Dharshini |
+| USN | **25BTRAD051** |
+| University | Jain University |
+| Programme | Artificial Intelligence and Data Engineering, Semester III |
+| Course | Operating Systems |
+| Faculty | Mrs. Shanti B. Hegde |
+| Academic year | 2026–2027 |
 
-## Quick Start
+## Hospital scenario
 
-```bat
-# 1. Start the server (double-click or run in terminal)
-start.bat
+Processes represent hospital software services such as patient records, billing, laboratory reporting, and appointments. Resource types can represent database connections, storage slots, and printers. Process and resource indices are generic; the program accepts any resource count within its documented input limits.
 
-# 2. Open browser
-http://localhost:8000
+The model is a fixed snapshot. Each process declares its maximum demand in advance, and reusable resources are released after simulated completion. It does not connect to a hospital or control clinical equipment.
+
+## Requirements
+
+- JDK 11 or newer, including both `java` and `javac`.
+- Windows PowerShell 5.1 or newer for the supplied Windows scripts. Direct Java commands also work on Linux.
+- No external libraries, Python environment, database, web server, or model download is required.
+
+The Windows scripts look for a JDK in `JAVA_HOME`, then `PATH`, then the current user's `.jdks` directory. They use the compiler and Java runtime from the same JDK.
+
+## Run on Windows
+
+Open PowerShell in this project folder.
+
+```powershell
+# Interactive entry of all matrices
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\run.ps1
+
+# Report example with the resource-release trace
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\run.ps1 -InputFile .\samples\safe.txt -Trace
+
+# Unsafe snapshot
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\run.ps1 -InputFile .\samples\unsafe.txt -Trace
+
+# Automated regression checks
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\test.ps1
 ```
 
-> **Python environment:** `C:\signenv` (pre-configured with all packages)
+Alternatively, double-click `start.bat` for interactive use. The script compiles into the ignored `build` directory before launching. When using `-InputFile`, relative paths are resolved from your terminal's current directory.
 
----
+## Compile directly on Windows or Linux
 
-## Project Structure
+From the project folder, run:
 
-```
-signbridge-ai/
-├── backend/
-│   ├── main.py                 FastAPI app — REST + WebSocket
-│   ├── websocket_handler.py    Real-time landmark stream handler
-│   ├── hand_detector.py        MediaPipe HandLandmarker (Tasks API)
-│   ├── predictor.py            PyTorch LSTM inference wrapper
-│   ├── preprocessing.py        Landmark normalization + sequence buffer
-│   ├── sentence_builder.py     Debounce / hold / grammar logic
-│   ├── hand_landmarker.task    MediaPipe model binary (7.8 MB)
-│   └── requirements.txt
-├── model/
-│   ├── train_model.py          PyTorch LSTM trainer (ISLLSTMModel)
-│   ├── evaluate_model.py       Confusion matrix + classification report
-│   ├── dataset_collector.py    Live webcam + synthetic ISL generator
-│   ├── trained_model.pt        ✅ Trained model weights
-│   ├── labels.json             11 ISL class labels
-│   └── confusion_matrix.png    ✅ Generated after evaluation
-├── dataset/
-│   ├── raw/                    Per-gesture .npy sequence files
-│   └── processed/
-│       ├── X.npy               (770, 30, 126)
-│       ├── y.npy               (770,)
-│       ├── X_test.npy          Held-out test split
-│       └── y_test.npy
-├── frontend/
-│   ├── index.html              Full dashboard UI
-│   ├── style.css               Dark glassmorphism theme
-│   └── script.js               WebRTC + MediaPipe + WebSocket client
-├── start.bat                   ▶  One-click server launcher
-├── train.bat                   ▶  Retrain model from scratch
-└── README.md
+```text
+javac HospitalDeadlock.java
+java HospitalDeadlock
+java HospitalDeadlock --input samples/safe.txt --trace
+java HospitalDeadlock --help
 ```
 
----
+The source filename and public class are both `HospitalDeadlock`, as specified in the report. Direct compilation creates `HospitalDeadlock.class`, which Git ignores.
 
-## Supported ISL Signs (20 Gestures)
+## Input format
 
-| Sign | Type | Hands | Description |
-|------|------|-------|-------------|
-| HELLO | Greeting | 2 | Open upright hands waving |
-| NAMASTE | Respect / Greeting | 2 | Both palms pressed flat together at chest |
-| THANK YOU | Courtesy | 1 | Flat hand from chin moving forward & down |
-| PLEASE | Politeness | 2 | Dominant palm rubbing circular on flat palm |
-| YES | Affirmation | 1 | Closed fist nodding up and down from wrist |
-| NO | Negation | 1 | Index & Middle fingers waving side to side |
-| HELP | Assistance | 2 | Fist on flat palm lifting upward together |
-| HOW | Question | 2 | Curved hands rotating upward |
-| ARE | Auxiliary | 1 | Flat hand sweeping smoothly forward |
-| YOU | Pronoun | 1 | Index finger pointing forward at camera |
-| GOOD | Descriptor | 1 | Decisive thumbs up with 4 fingers curled |
-| BAD | Disapproval | 1 | Decisive thumbs down with 4 fingers curled |
-| LOVE | Affection | 1 | 'I Love You': Thumb, Index, Pinky extended |
-| PEACE | Victory | 1 | Victory V-sign: Index & Middle spread in V |
-| STOP | Command | 1 | Open vertical palm facing camera firmly |
-| OK | Agreement | 1 | Thumb & Index pinch circle, 3 fingers up |
-| SORRY | Apology | 1 | Fist rubbing circular on chest / heart |
-| WATER | Sustenance | 1 | 3 fingers upright in 'W' shape near mouth |
-| WELCOME | Courtesy | 2 | Both palms up, sweeping inward toward body |
-| NEUTRAL | Resting State | 0 | Resting hands / transitions / idle |
+Supply whitespace-separated integers in this order:
 
-> **Note:** All single-handed gestures support both **Left** and **Right** hands!
+1. Number of processes `n`.
+2. Number of resource types `m`.
+3. Allocation matrix: `n` rows, each with `m` values.
+4. Maximum Demand matrix: `n` rows, each with `m` values.
+5. Available vector: `m` values.
 
----
+Newlines help readability; the parser treats all whitespace equally. Do not include comments or labels in input files. Interactive mode completes after the Available vector, without needing an EOF keystroke. File mode rejects surplus tokens after a complete snapshot.
 
-## Model Performance & Metrics
+For the report example, resources A, B, and C mean Database, Storage, and Printer:
 
-> **Evaluated Test Accuracy: 86.25%** across 480 held-out test sequences on all 20 classes.
-> Confusion matrix visualization saved to `model/confusion_matrix.png`.
+| Process | Allocation A B C | Maximum A B C | Need A B C |
+| --- | --- | --- | --- |
+| P0 | 0 1 0 | 7 5 3 | 7 4 3 |
+| P1 | 2 0 0 | 3 2 2 | 1 2 2 |
+| P2 | 3 0 2 | 9 0 2 | 6 0 0 |
+| P3 | 2 1 1 | 2 2 2 | 0 1 1 |
+| P4 | 0 0 2 | 4 3 3 | 4 3 1 |
 
----
+Available starts as `[3, 3, 2]`. The corresponding input is in [samples/safe.txt](samples/safe.txt).
 
-## Live Recording & Dataset Expansion (Optional)
+## How the safety check works
 
-You can record additional custom live gesture data using your webcam at any time:
+`Need[i][j] = Maximum[i][j] - Allocation[i][j]`
 
----
+Copy Available into Work and mark every process unfinished. Scan processes in increasing index order. Select a process only when its Need is no greater than Work for **every** resource type. Simulate completion by adding that process's Allocation to Work. Continue scanning, then repeat until all processes finish or an entire scan makes no progress.
 
-## Installation (Already Done)
-
-The virtual environment `C:\signenv` is already set up. If you need to reinstall:
-
-```bat
-python -m venv C:\signenv
-C:\signenv\Scripts\pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-C:\signenv\Scripts\pip install fastapi uvicorn[standard] websockets mediapipe opencv-python numpy scikit-learn matplotlib seaborn pyttsx3 pydantic
+```mermaid
+flowchart TD
+    A[Read process and resource counts] --> B[Read Allocation, Maximum and Available]
+    B --> C{Input valid?}
+    C -- No --> D[Show validation message and exit]
+    C -- Yes --> E[Calculate Need and copy Available into Work]
+    E --> F{Find unfinished process with Need at most Work?}
+    F -- Yes --> G[Add Allocation to Work and mark process finished]
+    G --> H{All processes finished?}
+    H -- Yes --> I[Print SAFE and safe sequence]
+    H -- No --> F
+    F -- No --> J[Print UNSAFE and no safe sequence]
 ```
 
-> **Note:** Use `C:\signenv` (short path) to avoid Windows MAX_PATH errors with deep package paths.
+For the report example, the trace is:
 
----
+| Selected process | Work before | Released Allocation | Work after |
+| --- | --- | --- | --- |
+| P1 | 3, 3, 2 | 2, 0, 0 | 5, 3, 2 |
+| P3 | 5, 3, 2 | 2, 1, 1 | 7, 4, 3 |
+| P4 | 7, 4, 3 | 0, 0, 2 | 7, 4, 5 |
+| P0 | 7, 4, 5 | 0, 1, 0 | 7, 5, 5 |
+| P2 | 7, 5, 5 | 3, 0, 2 | 10, 5, 7 |
 
-## Running the Application
+Result: `P1 -> P3 -> P4 -> P0 -> P2`. Other valid algorithms may find a different safe order; this implementation follows the report's scan order.
 
-### Start the server
+## Results and validation
 
-```bat
-start.bat
-# or manually:
-cd C:\Users\teega\.gemini\antigravity\scratch\signbridge-ai
-C:\signenv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-```
+| Sample | Expected result |
+| --- | --- |
+| [safe.txt](samples/safe.txt) | SAFE; report sequence and Need matrix |
+| [unsafe.txt](samples/unsafe.txt) | UNSAFE; neither process has enough free resources to finish |
+| [invalid-negative.txt](samples/invalid-negative.txt) | Reject negative Allocation |
+| [invalid-maximum.txt](samples/invalid-maximum.txt) | Reject Maximum below Allocation |
 
-### Open in browser
+Actual console transcripts are included in `samples/*-output.txt`. Reproduce them with `run.ps1` and the corresponding input file. The safe and unsafe transcripts include `-Trace`.
 
-```
-http://localhost:8000
-```
+The program rejects zero or negative dimensions, negative resource values, Maximum below Allocation, non-integers, missing input, values outside the 32-bit integer range, extra file input, and invalid command options. There is a limit of 1,000,000 cells per matrix to avoid accidental excessive allocation. Work uses 64-bit arithmetic so released resources can accumulate beyond the 32-bit input range.
 
-> Requires a modern browser (Chrome, Edge, Firefox) with webcam access. Use `localhost` or `https://` — webcam requires a secure context.
+A successfully evaluated snapshot returns exit code **0**, whether safe or unsafe. Invalid input or an unreadable input file returns **1**. An unsafe state is a valid algorithm result, rather than a program failure.
 
----
+## Deadlock concepts and limits
 
-## Retraining the Model
+The report discusses mutual exclusion, hold and wait, no preemption, and circular wait. These conditions explain how deadlock can arise; this program implements the **safety check**, rather than a concurrent demonstration of all four conditions.
 
-```bat
-# Full retrain + evaluation
-train.bat
+**UNSAFE does not necessarily mean an existing deadlock.** It means completion cannot be guaranteed under the declared maximum demands. The program assumes Available is consistent with the real total capacity; it does not receive a separate total-capacity vector.
 
-# Or manually with options
-C:\signenv\Scripts\python.exe model\train_model.py --epochs 60 --batch_size 32 --patience 15
-C:\signenv\Scripts\python.exe model\evaluate_model.py
-```
+The implementation does not continuously monitor requests, tentatively grant new requests, terminate processes, preempt resources, perform recovery, or calculate CPU scheduling metrics. A request-granting menu, resource-allocation graph, persistent logs, and GUI remain future enhancements, matching the report.
 
----
+## Files and verification
 
-## REST API Reference
+- `HospitalDeadlock.java`: console program, validation, Need calculation, and safety check.
+- `run.ps1`, `start.bat`: compilation and Windows launchers.
+- `scripts/Get-JavaTools.ps1`: JDK discovery shared by the runner and tests.
+- `test.ps1`: checks known safe and unsafe states, multi-resource eligibility, resource release, invalid input, and overflow handling.
+- `samples/`: runnable inputs and captured output.
+- `docs/Hospital_Deadlock_Report_25BTRAD051.docx`: unchanged source report.
+- [docs/REPORT_ALIGNMENT.md](docs/REPORT_ALIGNMENT.md): mapping between the report and deliverables.
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/status` | Server health, model status, vocabulary |
-| GET | `/api/vocabulary` | Detailed gesture descriptions |
-| POST | `/api/speak` | Server-side TTS (pyttsx3 fallback) |
-| POST | `/api/model/reload` | Hot-reload newly trained model |
-| WS  | `/ws/landmarks` | Real-time landmark → prediction stream |
-
----
-
-## WebSocket Protocol
-
-**Client → Server** (`type: "landmarks"`):
-```json
-{
-  "type": "landmarks",
-  "left_hand": [{"x":0.5,"y":0.4,"z":-0.1}, ...],
-  "right_hand": null,
-  "client_timestamp": 1700000000000
-}
-```
-
-**Server → Client** (`type: "prediction"`):
-```json
-{
-  "type": "prediction",
-  "predicted_word": "HELLO",
-  "confidence": 0.87,
-  "candidate_word": "HELLO",
-  "candidate_progress": 0.6,
-  "is_holding": true,
-  "last_confirmed": null
-}
-```
-
-**Server → Client** (`type: "word_confirmed"`):
-```json
-{
-  "type": "word_confirmed",
-  "word": "HELLO",
-  "sentence_state": {"words": ["HELLO"], "sentence": "Hello", ...}
-}
-```
+Worst-case safety-check time is `O(n² × m)`; matrix storage is `O(n × m)`. The optional trace explains each successful selection and identifies unfinished processes when the check stops.
