@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 
-sys.path.insert(0, r"C:\Users\teega\.gemini\antigravity\scratch\signbridge-ai\backend")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend"))
 from predictor import SignPredictor
 
 predictor = SignPredictor()

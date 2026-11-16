@@ -3,3 +3,12 @@ __pycache__/
 .venv/
 venv/
 venv.zip
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+.env
+.env.*
+!.env.example
+25BTRAD051_EXPERIENTIAL LEARNING ACTIVITY/dataset/raw/
+25BTRAD051_EXPERIENTIAL LEARNING ACTIVITY/dataset/processed/

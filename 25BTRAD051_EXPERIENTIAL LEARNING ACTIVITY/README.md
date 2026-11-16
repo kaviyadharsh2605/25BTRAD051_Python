@@ -1,193 +1,116 @@
-# SignBridge AI — Real-Time ISL to Text Translator
+# SignBridge AI
 
-> **AI-powered Indian Sign Language (ISL) recognition website** — webcam → MediaPipe landmarks → LSTM → real-time text + TTS.
+**Real-time sign-language recognition demonstration · 25BTRAD051**
 
----
+SignBridge captures hand landmarks in the browser and streams them to a FastAPI server. The backend combines a PyTorch LSTM model with geometric gesture rules, stabilizes predictions into words, and returns text. Browser speech synthesis and a server-side speech endpoint provide audio output.
 
-## Quick Start
-
-```bat
-# 1. Start the server (double-click or run in terminal)
-start.bat
-
-# 2. Open browser
-http://localhost:8000
+```mermaid
+flowchart LR
+    A[Webcam] --> B[Browser MediaPipe hand landmarks]
+    B --> C[WebSocket]
+    C --> D[Normalize and buffer landmarks]
+    D --> E[LSTM and geometric gesture rules]
+    E --> F[Word confirmation and sentence state]
+    F --> G[Browser text and speech]
 ```
 
-> **Python environment:** `C:\signenv` (pre-configured with all packages)
+## Setup and running
 
----
+Use 64-bit Python 3.11 or 3.12. Run the following in **this application folder**, not the repository root:
 
-## Project Structure
-
-```
-signbridge-ai/
-├── backend/
-│   ├── main.py                 FastAPI app — REST + WebSocket
-│   ├── websocket_handler.py    Real-time landmark stream handler
-│   ├── hand_detector.py        MediaPipe HandLandmarker (Tasks API)
-│   ├── predictor.py            PyTorch LSTM inference wrapper
-│   ├── preprocessing.py        Landmark normalization + sequence buffer
-│   ├── sentence_builder.py     Debounce / hold / grammar logic
-│   ├── hand_landmarker.task    MediaPipe model binary (7.8 MB)
-│   └── requirements.txt
-├── model/
-│   ├── train_model.py          PyTorch LSTM trainer (ISLLSTMModel)
-│   ├── evaluate_model.py       Confusion matrix + classification report
-│   ├── dataset_collector.py    Live webcam + synthetic ISL generator
-│   ├── trained_model.pt        ✅ Trained model weights
-│   ├── labels.json             11 ISL class labels
-│   └── confusion_matrix.png    ✅ Generated after evaluation
-├── dataset/
-│   ├── raw/                    Per-gesture .npy sequence files
-│   └── processed/
-│       ├── X.npy               (770, 30, 126)
-│       ├── y.npy               (770,)
-│       ├── X_test.npy          Held-out test split
-│       └── y_test.npy
-├── frontend/
-│   ├── index.html              Full dashboard UI
-│   ├── style.css               Dark glassmorphism theme
-│   └── script.js               WebRTC + MediaPipe + WebSocket client
-├── start.bat                   ▶  One-click server launcher
-├── train.bat                   ▶  Retrain model from scratch
-└── README.md
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r .\backend\requirements.txt
+.\start.bat
 ```
 
----
+CPU installation does not require an NVIDIA GPU. For other builds, use the [official PyTorch installer](https://pytorch.org/get-started/locally/). See also [MediaPipe's Python setup guide](https://developers.google.com/edge/mediapipe/solutions/setup_python).
 
-## Supported ISL Signs (20 Gestures)
+The Windows launchers use `.venv\Scripts\python.exe` and resolve paths relative to their own location. They do not install packages or train a missing model automatically. To launch manually:
 
-| Sign | Type | Hands | Description |
-|------|------|-------|-------------|
-| HELLO | Greeting | 2 | Open upright hands waving |
-| NAMASTE | Respect / Greeting | 2 | Both palms pressed flat together at chest |
-| THANK YOU | Courtesy | 1 | Flat hand from chin moving forward & down |
-| PLEASE | Politeness | 2 | Dominant palm rubbing circular on flat palm |
-| YES | Affirmation | 1 | Closed fist nodding up and down from wrist |
-| NO | Negation | 1 | Index & Middle fingers waving side to side |
-| HELP | Assistance | 2 | Fist on flat palm lifting upward together |
-| HOW | Question | 2 | Curved hands rotating upward |
-| ARE | Auxiliary | 1 | Flat hand sweeping smoothly forward |
-| YOU | Pronoun | 1 | Index finger pointing forward at camera |
-| GOOD | Descriptor | 1 | Decisive thumbs up with 4 fingers curled |
-| BAD | Disapproval | 1 | Decisive thumbs down with 4 fingers curled |
-| LOVE | Affection | 1 | 'I Love You': Thumb, Index, Pinky extended |
-| PEACE | Victory | 1 | Victory V-sign: Index & Middle spread in V |
-| STOP | Command | 1 | Open vertical palm facing camera firmly |
-| OK | Agreement | 1 | Thumb & Index pinch circle, 3 fingers up |
-| SORRY | Apology | 1 | Fist rubbing circular on chest / heart |
-| WATER | Sustenance | 1 | 3 fingers upright in 'W' shape near mouth |
-| WELCOME | Courtesy | 2 | Both palms up, sweeping inward toward body |
-| NEUTRAL | Resting State | 0 | Resting hands / transitions / idle |
-
-> **Note:** All single-handed gestures support both **Left** and **Right** hands!
-
----
-
-## Model Performance & Metrics
-
-> **Evaluated Test Accuracy: 86.25%** across 480 held-out test sequences on all 20 classes.
-> Confusion matrix visualization saved to `model/confusion_matrix.png`.
-
----
-
-## Live Recording & Dataset Expansion (Optional)
-
-You can record additional custom live gesture data using your webcam at any time:
-
----
-
-## Installation (Already Done)
-
-The virtual environment `C:\signenv` is already set up. If you need to reinstall:
-
-```bat
-python -m venv C:\signenv
-C:\signenv\Scripts\pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-C:\signenv\Scripts\pip install fastapi uvicorn[standard] websockets mediapipe opencv-python numpy scikit-learn matplotlib seaborn pyttsx3 pydantic
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-> **Note:** Use `C:\signenv` (short path) to avoid Windows MAX_PATH errors with deep package paths.
+Open [localhost:8000](http://localhost:8000), allow camera access, and start the camera from the page. The frontend downloads MediaPipe assets from jsDelivr, so it is not fully offline. Remote deployment requires HTTPS for camera access and additional deployment configuration.
 
----
+## Included files
 
-## Running the Application
-
-### Start the server
-
-```bat
-start.bat
-# or manually:
-cd C:\Users\teega\.gemini\antigravity\scratch\signbridge-ai
-C:\signenv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+```text
+backend/                 FastAPI, prediction, preprocessing, and sentence logic
+  hand_landmarker.task   MediaPipe model asset
+  requirements.txt       Python dependencies, including PyTorch
+frontend/                HTML, CSS, and browser JavaScript
+model/
+  trained_model.pt       Saved LSTM checkpoint
+  labels.json            20 vocabulary labels
+  confusion_matrix.png   Existing evaluation figure
+  train_model.py         Training and held-out split generation
+  evaluate_model.py      Evaluation and confusion matrix
+  dataset_collector.py   Synthetic data generation and live recording
+dataset/                 Compressed data and extraction guide
+test_accuracy.py         Synthetic gesture diagnostic
+start.bat                Windows server launcher
+train.bat                Windows training and evaluation launcher
 ```
 
-### Open in browser
+Raw and processed dataset directories are **not extracted in a fresh clone**. Follow the [dataset guide](dataset/README.md) before training or evaluating saved data. They are not needed to serve the included checkpoint.
 
-```
-http://localhost:8000
-```
+## Vocabulary
 
-> Requires a modern browser (Chrome, Edge, Firefox) with webcam access. Use `localhost` or `https://` — webcam requires a secure context.
+[model/labels.json](model/labels.json) contains `HELLO`, `NAMASTE`, `THANK YOU`, `PLEASE`, `YES`, `NO`, `HELP`, `HOW`, `ARE`, `YOU`, `GOOD`, `BAD`, `LOVE`, `PEACE`, `STOP`, `OK`, `SORRY`, `WATER`, `WELCOME`, and `NEUTRAL`.
 
----
+NEUTRAL is an idle class. This is a demonstration vocabulary, not complete Indian Sign Language coverage. Geometry rules and synthetic examples may not represent natural signing across users, camera positions, and lighting conditions.
 
-## Retraining the Model
+## Training and evaluation
 
-```bat
-# Full retrain + evaluation
-train.bat
+Training replaces `model/trained_model.pt` and can update processed data. Back up the checkpoint before experimenting.
 
-# Or manually with options
-C:\signenv\Scripts\python.exe model\train_model.py --epochs 60 --batch_size 32 --patience 15
-C:\signenv\Scripts\python.exe model\evaluate_model.py
-```
+```powershell
+# Train with the default 40 epochs and batch size 32, then evaluate
+.\train.bat
 
----
+# Override training options
+.\train.bat --epochs 60 --batch_size 32 --patience 15
 
-## REST API Reference
+# Evaluate a saved checkpoint after preparing the dataset
+.\.venv\Scripts\python.exe .\model\evaluate_model.py
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/status` | Server health, model status, vocabulary |
-| GET | `/api/vocabulary` | Detailed gesture descriptions |
-| POST | `/api/speak` | Server-side TTS (pyttsx3 fallback) |
-| POST | `/api/model/reload` | Hot-reload newly trained model |
-| WS  | `/ws/landmarks` | Real-time landmark → prediction stream |
+# Print predictions for synthetic landmark examples
+.\.venv\Scripts\python.exe .\test_accuracy.py
 
----
-
-## WebSocket Protocol
-
-**Client → Server** (`type: "landmarks"`):
-```json
-{
-  "type": "landmarks",
-  "left_hand": [{"x":0.5,"y":0.4,"z":-0.1}, ...],
-  "right_hand": null,
-  "client_timestamp": 1700000000000
-}
+# Record a gesture using the webcam
+.\.venv\Scripts\python.exe .\model\dataset_collector.py --live --gesture HELLO
 ```
 
-**Server → Client** (`type: "prediction"`):
-```json
-{
-  "type": "prediction",
-  "predicted_word": "HELLO",
-  "confidence": 0.87,
-  "candidate_word": "HELLO",
-  "candidate_progress": 0.6,
-  "is_holding": true,
-  "last_confirmed": null
-}
-```
+`test_accuracy.py` is a diagnostic, not an automated accuracy assertion suite. The training loader generates synthetic data when compatible processed data is absent. Evaluation prefers `X_test.npy` and `y_test.npy`; its fallback uses the full processed dataset. That fallback is **not a held-out accuracy measurement**.
 
-**Server → Client** (`type: "word_confirmed"`):
-```json
-{
-  "type": "word_confirmed",
-  "word": "HELLO",
-  "sentence_state": {"words": ["HELLO"], "sentence": "Hello", ...}
-}
-```
+The saved [confusion matrix](model/confusion_matrix.png) is a historical project artifact. It was not re-evaluated during repository cleanup. Synthetic-data results should not be presented as validated webcam performance.
+
+## Server endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/status` | Service status, model readiness, load errors, and vocabulary |
+| GET | `/api/vocabulary` | Gesture vocabulary and descriptions |
+| POST | `/api/speak` | Server-side text to speech |
+| POST | `/api/model/reload` | Reload the saved model |
+| WebSocket | `/ws/landmarks` | Landmark input, predictions, and confirmed words |
+
+The landmark protocol uses `type: "landmarks"`, `left_hand`, `right_hand`, and `client_timestamp`. A detected hand contains 21 objects with `x`, `y`, and `z` coordinates; an absent hand is `null`. [frontend/script.js](frontend/script.js) implements the protocol and sentence controls.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| Missing environment | Create `.venv` inside this folder and install the requirements |
+| `model_loaded` is false | Read `model_error` at `/api/status`; check dependencies and checkpoint |
+| Camera is blocked | Allow permission, use localhost, and close other apps using the camera |
+| Browser tracking fails | Check access to jsDelivr and inspect the browser console |
+| Evaluation cannot find `.npy` files | Follow the [dataset guide](dataset/README.md) |
+| Port 8000 is in use | Stop the other server or use a different `--port` in the manual command |
+| Speech is silent | Check browser/system voices and audio output |
+
+[Back to the repository guide](../README.md)
