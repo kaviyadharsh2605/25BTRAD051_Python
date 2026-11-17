@@ -1,7 +1,7 @@
 import sys
 import platform
 
-print("Name: Harissh M V")
+print("Name: kaviya")
 print("USN: 25BTRAD051")
 print("-" * 40)
 print("Python Installation Verification")
