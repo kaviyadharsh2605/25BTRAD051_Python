@@ -10,7 +10,6 @@ This repository contains Python lab exercises and problem-solving assignments, w
 | --- | --- |
 | [Lab Exercises](25BTRAD051_Lab%20Exercises/README.md) | 17 Python exercise folders with source code and output images |
 | [Problem Solving](25BTRAD051_Problem%20Solving/README.md) | Unit 1 assignments, attendance tracker, OTP generator, and unit converter |
-| [Hospital Deadlock Project](Hospital_Deadlock_Project/README.md) | Standalone Java safety simulation restored from the earlier Git project, with a demo menu, sample inputs, report, and tests |
 
 ## Getting started on Windows
 
