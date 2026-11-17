@@ -1,6 +1,0 @@
-See README.md in this directory for the full extraction commands.
-
-Extract raw(1).zip and raw(2).zip into the same dataset/raw directory.
-Extract X.7z, y.zip, and X_test&Y_test.zip into dataset/processed.
-The processed directory must directly contain X.npy, y.npy, X_test.npy, and y_test.npy.
-Extraction is optional for serving the included saved model.
