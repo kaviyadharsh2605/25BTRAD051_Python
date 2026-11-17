@@ -4,7 +4,7 @@ Contents:
 - assignment_unit1_all_18_tasks.py: menu-driven Python file containing Tasks 1-18.
 - output_images/: cropped images of the original output sections from the supplied PDF.
   These are taken directly from the PDF pages, not recreated.
-- The source PDF is "Assignment Unit-1 Harissh.pdf" (7 pages).
+- The source PDF is "Assignment Unit-1 Kaviya Dharshini S.pdf" (7 pages).
 
 Tasks 2, 3 and 4 show the question and output in the PDF, but no answer
 code is printed there. Their implementations were supplied from the

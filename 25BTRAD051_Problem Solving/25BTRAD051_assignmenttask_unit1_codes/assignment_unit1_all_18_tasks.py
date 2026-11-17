@@ -9,7 +9,7 @@ from the stated questions.
 """
 
 def task_1():
-    print("Harissh ")
+    print("Kaviya Dharshini S ")
     print("CSE-Artificial Intelligence and Data Engineering")
     print("Jain University")
 
@@ -49,7 +49,7 @@ def task_9():
     print("Third")
 
 def task_10():
-    name = "Harissh"
+    name = "Kaviya Dharshini S"
     print(name)
 
 def task_11():

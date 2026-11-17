@@ -18,7 +18,7 @@ class BankAccount:
     def balance(self):
         return self._balance
 
-account = BankAccount("Harissh", 1000)
+account = BankAccount("Kaviya Dharshini S", 1000)
 print("Opening balance:", account.balance())
 print("Deposit Rs.500:", account.deposit(500))
 print("Withdraw Rs.300:", account.withdraw(300))

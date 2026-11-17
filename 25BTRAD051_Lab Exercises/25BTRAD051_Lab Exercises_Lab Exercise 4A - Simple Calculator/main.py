@@ -10,7 +10,7 @@ def calculator(num1, num2, choice):
     else:
         return "Invalid operator"
 
-print("Name: Harissh M V")
+print("Name: Kaviya Dharshini S")
 print("USN: 25BTRAD051")
 print("-" * 40)
 print("Simple Calculator")

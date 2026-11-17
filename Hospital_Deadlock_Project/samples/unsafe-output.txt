@@ -1,0 +1,19 @@
+HOSPITAL RESOURCE MANAGEMENT - BANKER'S SAFETY ALGORITHM
+Kaviya Dharshini S | USN: 25BTRAD051
+Educational simulation of a fixed resource-allocation snapshot.
+Enter number of processes: Enter number of resource types:
+Enter Allocation Matrix (one row per process):
+Enter Maximum Demand Matrix (one row per process):
+Enter Available Resources:
+
+Need Matrix (Maximum - Allocation):
+P0: 0 1
+P1: 1 0
+
+Initial Work: [0, 0]
+
+System is in an UNSAFE state.
+No safe sequence exists for this snapshot.
+An unsafe state does not necessarily mean deadlock has already occurred.
+Final Work: [0, 0]
+Unfinished processes: P0 P1
