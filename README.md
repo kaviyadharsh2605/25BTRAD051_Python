@@ -2,18 +2,19 @@
 
 **Kaviya Dharshini S · 25BTRAD051**
 
-This repository contains Python lab exercises and problem-solving assignments, with source code and saved output examples.
+This repository contains Python lab exercises, problem-solving assignments, and the CampusFind experiential-learning project, with source code and saved output examples.
 
 ## Repository guide
 
 | Folder | Contents |
 | --- | --- |
-| [Lab Exercises](25BTRAD051_Lab%20Exercises/README.md) | 17 Python exercise folders with source code and output images |
-| [Problem Solving](25BTRAD051_Problem%20Solving/README.md) | Unit 1 assignments, attendance tracker, OTP generator, and unit converter |
+| [Lab Exercises](25BTRAD051_Lab%20Exercises/README.md) | 17 exercise folders with original source, output images, and additional programs matched by exercise number |
+| [Problem Solving](25BTRAD051_Problem%20Solving/README.md) | Unit 1 assignments, attendance tracker, OTP generator, unit converter, bill generator, sales analyzer, and grading automation |
+| [Experiential Learning Activity](25BTRAD051_Experiential%20Learning%20Activity/README.md) | CampusFind college lost-and-found application |
 
 ## Getting started on Windows
 
-Install Python and open PowerShell. Python must be available as `python`; if Windows opens the Microsoft Store, install Python and reopen the terminal first. The coursework uses Python's standard library and does not require additional packages.
+Install Python and open PowerShell. Python must be available as `python`; if Windows opens the Microsoft Store, install Python and reopen the terminal first. The lab and problem-solving coursework uses Python's standard library. CampusFind has its own dependencies and setup instructions in the experiential-learning guide.
 
 ```powershell
 git clone https://github.com/kaviyadharsh2605/25BTRAD051_Python.git

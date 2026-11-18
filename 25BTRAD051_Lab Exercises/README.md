@@ -19,6 +19,20 @@ python .\main.py
 
 Interactive exercises prompt for values. Random outputs may differ from the saved images. File-handling exercises may create data files in their working directory.
 
+## Additional exercise programs
+
+Programs from the former `USN_Lab Exercises` folder are now alongside the matching `main.py` files. Their filenames use `25BTRAD051` and the exercise number in the table below. The original code and output images are retained.
+
+Run the additional program from its exercise folder, for example:
+
+```powershell
+python .\25BTRAD051_EXP_02.py
+```
+
+Exercise 4A contains `25BTRAD051_EXP_04A.py`. Exercise 6 contains the separate `25BTRAD051_EXP_06_Prime_Number_Checker.py` and `25BTRAD051_EXP_06_Factorial.py`. The other additional programs use `25BTRAD051_EXP_01.py` through `25BTRAD051_EXP_16.py`, following the topic numbers below. Exercise 4B retains its existing area-calculation program.
+
+For the additional file-handling programs, supply `application.log` in Exercise 11 and `employees.csv` in Exercise 13. The payroll file needs the header `Name,Basic,HRA,DA,Deduction`, as documented in its source.
+
 ## Exercises
 
 | Exercise | Topic and source |
