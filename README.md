@@ -2,19 +2,19 @@
 
 **Kaviya Dharshini S · 25BTRAD051**
 
-This repository contains Python lab exercises, problem-solving assignments, and the CampusFind experiential-learning project, with source code and saved output examples.
+This repository contains Python lab exercises, problem-solving assignments, and the StudyVerse experiential-learning project.
 
 ## Repository guide
 
 | Folder | Contents |
 | --- | --- |
-| [Lab Exercises](25BTRAD051_Lab%20Exercises/README.md) | 17 exercise folders with original source, output images, and additional programs matched by exercise number |
-| [Problem Solving](25BTRAD051_Problem%20Solving/README.md) | Unit 1 assignments, attendance tracker, OTP generator, unit converter, bill generator, sales analyzer, and grading automation |
-| [Experiential Learning Activity](25BTRAD051_Experiential%20Learning%20Activity/README.md) | CampusFind college lost-and-found application |
+| [Lab Exercises](25BTRAD051_Lab%20Exercises/README.md) | Python lab exercises with source files and saved output examples |
+| [Problem Solving](25BTRAD051_Problem%20Solving/README.md) | Assignments and problem-solving programs |
+| [Experiential Learning Activity](25BTRAD051_Experiential%20Learning%20Activity/README.md) | StudyVerse academic study app with Streamlit, FastAPI, and an offline prototype |
 
 ## Getting started on Windows
 
-Install Python and open PowerShell. Python must be available as `python`; if Windows opens the Microsoft Store, install Python and reopen the terminal first. The lab and problem-solving coursework uses Python's standard library. CampusFind has its own dependencies and setup instructions in the experiential-learning guide.
+Install Python and open PowerShell. Clone the repository, then run a coursework script from its folder:
 
 ```powershell
 git clone https://github.com/kaviyadharsh2605/25BTRAD051_Python.git
@@ -22,16 +22,8 @@ Set-Location '.\25BTRAD051_Python'
 python --version
 ```
 
-## Run the coursework
+Most lab and problem-solving scripts use Python's standard library. For the StudyVerse app, use the setup instructions in its [project guide](25BTRAD051_Experiential%20Learning%20Activity/README.md).
 
-The lab and problem-solving scripts use Python's standard library. Open an exercise folder and run:
+## Repository hygiene
 
-```powershell
-python .\main.py
-```
-
-The combined Unit 1 assignment has a menu-driven script described in the [problem-solving guide](25BTRAD051_Problem%20Solving/README.md). Interactive programs prompt for values. Output images are saved examples; results may differ for other inputs or random values.
-
-## Scope and repository hygiene
-
-These programs are educational exercises. The OTP generator is a demonstration rather than an authentication service. Keep source files and output examples together in their exercise folders. Virtual environments, Python caches, and local environment files are excluded by `.gitignore`.
+Virtual environments, Python caches, local environment files, and generated application databases are excluded from version control.

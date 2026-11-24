@@ -1,8 +1,0 @@
-# Local application state and generated files
-.matplotlib_cache/
-.theme_preference
-database/*.db
-database/*.db-shm
-database/*.db-wal
-uploads/
-exports/

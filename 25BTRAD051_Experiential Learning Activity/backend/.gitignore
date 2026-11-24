@@ -1,0 +1,9 @@
+data/studyverse.db
+data/studyverse.db-*
+data/uploads/*
+data/indexes/*
+!data/uploads/.gitkeep
+!data/indexes/.gitkeep
+__pycache__/
+.pytest_cache/
+.venv/
